@@ -1,5 +1,5 @@
 /*
 Module Name: Deadlock
-Created by: Vishwajit
+Created by: Vishwajith
 File Purpose: Logic for the module
 */
