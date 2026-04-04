@@ -1,16 +1,333 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OS Simulation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="index.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>OS_EMULATOR | DIGITAL_MACHINIST</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="index.css" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "background": "#131313",
+                "tertiary-fixed-dim": "#930100",
+                "surface-bright": "#393939",
+                "outline": "#919191",
+                "secondary-container": "#474746",
+                "tertiary-fixed": "#c00100",
+                "on-surface-variant": "#c6c6c6",
+                "secondary": "#c8c6c5",
+                "surface-container": "#1f1f1f",
+                "surface-container-low": "#1b1b1b",
+                "outline-variant": "#474747",
+                "primary": "#ffffff",
+                "surface-container-highest": "#353535",
+                "on-surface": "#e2e2e2",
+                "tertiary": "#ffdad4",
+                "surface-container-high": "#2a2a2a",
+                "on-background": "#e2e2e2",
+                "surface-container-lowest": "#0e0e0e",
+                "surface-dim": "#131313",
+                "surface-variant": "#353535",
+                "tertiary-container": "#ff5540",
+                "error-container": "#93000a",
+                "surface": "#131313",
+              },
+              borderRadius: {
+                DEFAULT: "1rem",
+                lg: "2rem",
+                xl: "3rem",
+                full: "9999px"
+              },
+              fontFamily: {
+                headline: ["Space Grotesk"],
+                body: ["Inter"],
+                label: ["Space Grotesk"]
+              }
+            },
+          },
+        }
+    </script>
 </head>
-<body class="bg-slate-900 flex items-center justify-center min-h-screen">
-    <h1 class="text-6xl font-bold text-white tracking-tighter drop-shadow-2xl">
-        OS Simulation
-    </h1>
-    <script src="index.js"></script>
+<body class="font-body text-on-background selection:bg-tertiary-fixed selection:text-white">
+
+<!-- Nav -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-4 bg-[#131313]/80 backdrop-blur-xl border-b border-white/5">
+    <div class="font-headline font-bold tracking-tighter text-xl text-white flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-tertiary-fixed"></span>
+        OS_EMULATOR
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+        <a class="text-zinc-400 hover:text-white transition-colors font-headline uppercase tracking-widest text-[10px]" href="#hero">EXPLORE</a>
+        <a class="text-zinc-400 hover:text-white transition-colors font-headline uppercase tracking-widest text-[10px]" href="#modules">MODULES</a>
+        <a class="text-zinc-400 hover:text-white transition-colors font-headline uppercase tracking-widest text-[10px]" href="#team">TEAM</a>
+    </div>
+    <button id="btn-boot" class="btn-boot bg-tertiary-fixed text-white rounded-full px-6 py-2 font-headline font-bold tracking-widest text-[12px] active:scale-95 duration-100 transition-all uppercase">
+        BOOT
+    </button>
+</nav>
+
+<main class="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto space-y-16">
+
+    <!-- Hero -->
+    <section id="hero" class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <!-- Left -->
+        <div class="md:col-span-7 bg-surface-container-low rounded-lg p-8 md:p-12 flex flex-col justify-between min-h-[500px] border border-white/5">
+            <div>
+                <span class="inline-block px-3 py-1 bg-surface-container-highest border border-white/10 rounded-full text-[10px] font-label uppercase tracking-[0.2em] mb-8 text-on-surface-variant">VERSION_1.0.4_STABLE</span>
+                <h1 class="text-[clamp(2.35rem,7vw,4.8rem)] font-headline font-bold leading-[0.92] tracking-tighter mb-6 text-white max-w-full break-words">
+                    OS_<span class="text-tertiary-fixed">EMULATOR</span>
+                </h1>
+                <p class="text-tertiary-fixed font-label font-medium tracking-widest text-sm mb-4">SIMULATE THE HEART OF CODE.</p>
+                <p class="text-on-surface-variant max-w-md font-light leading-relaxed my-6">Master OS concepts via high-fidelity simulations. Engineered for precision learning in an isolated environment.</p>
+            </div>
+            <div class="pt-8">
+                <a href="#modules" class="inline-flex bg-tertiary-fixed text-white rounded-full px-8 py-4 font-headline font-bold uppercase tracking-widest items-center gap-4 hover:opacity-90 transition-opacity">
+                    ENTER_SYSTEM
+                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right -->
+        <div class="md:col-span-5 bg-surface-container rounded-lg overflow-hidden relative flex items-center justify-center border border-white/5 min-h-[400px]">
+            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 24px 24px;"></div>
+            <div class="relative z-10 w-full h-full flex items-center justify-center p-12 orbital-core-wrap">
+                <div class="ripple-ring ripple-ring-1"></div>
+                <div class="ripple-ring ripple-ring-2"></div>
+                <div class="ripple-ring ripple-ring-3"></div>
+                <div class="ripple-ring ripple-ring-4"></div>
+                <div class="orbital-core w-[110px] h-[110px] bg-white rounded-full mix-blend-difference"></div>
+            </div>
+            <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+                <div id="processor-load" class="font-label text-[10px] text-zinc-500 uppercase tracking-widest leading-tight">
+                    PROCESSOR_LOAD<br/>0.00042ms
+                </div>
+                <div class="font-label text-[10px] text-tertiary-fixed uppercase tracking-widest font-bold flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span>
+                    LIVE_RENDER
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Modules -->
+    <section id="modules" class="space-y-8 scroll-mt-24">
+        <div class="flex items-center gap-4">
+            <h2 class="font-headline text-2xl font-bold uppercase tracking-[0.3em] text-white">SYSTEM_MODULES</h2>
+            <div class="h-[1px] flex-grow bg-outline-variant/30"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <!-- Memory Management -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">database</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">MEMORY_MGMT</h3>
+                    <p class="text-zinc-500 text-sm font-light">Virtual address spaces and paging algorithms.</p>
+                </div>
+            </div>
+
+            <!-- Fragmentation -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">broken_image</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">FRAGMENTATION</h3>
+                    <p class="text-zinc-500 text-sm font-light">Internal & external fragmentation analysis.</p>
+                </div>
+            </div>
+
+            <!-- CPU Scheduling -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">memory</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">CPU_SCHEDULING</h3>
+                    <p class="text-zinc-500 text-sm font-light">Optimize process allocation and minimize latency.</p>
+                </div>
+            </div>
+
+            <!-- Deadlock (RAG) -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">lock</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">DEADLOCK_(RAG)</h3>
+                    <p class="text-zinc-500 text-sm font-light">Resource allocation graphs and cycle detection.</p>
+                </div>
+            </div>
+
+            <!-- Process Synchronization -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">sync</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">PROCESS_SYNC</h3>
+                    <p class="text-zinc-500 text-sm font-light">Semaphores, mutexes, and critical sections.</p>
+                </div>
+            </div>
+
+            <!-- Disk Scheduling -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">album</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">DISK_SCHEDULING</h3>
+                    <p class="text-zinc-500 text-sm font-light">FCFS, SSTF, SCAN, C-SCAN seek algorithms.</p>
+                </div>
+            </div>
+
+            <!-- File System and Allocation -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">folder_open</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">FILE_SYSTEM</h3>
+                    <p class="text-zinc-500 text-sm font-light">Contiguous, linked, and indexed allocation.</p>
+                </div>
+            </div>
+
+            <!-- System Calls -->
+            <div class="module-card bg-surface-container-low rounded-lg p-8 border border-white/5 flex flex-col justify-between h-64 cursor-pointer group">
+                <div class="flex justify-between items-start">
+                    <div class="p-3 bg-tertiary-fixed/10 rounded-lg border border-tertiary-fixed/20">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">terminal</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full border border-outline-variant/50 flex items-center justify-center text-zinc-500 group-hover:bg-tertiary-fixed group-hover:text-white group-hover:border-tertiary-fixed transition-all duration-200">
+                        <span class="material-symbols-outlined text-sm">north_east</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-headline text-base font-bold uppercase tracking-widest mb-2 text-white transition-colors duration-200">SYSTEM_CALLS</h3>
+                    <p class="text-zinc-500 text-sm font-light">Bridge user space and kernel routines.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Team -->
+    <section id="team" class="space-y-8 scroll-mt-24">
+        <div class="flex items-center gap-4">
+            <h2 class="font-headline text-2xl font-bold uppercase tracking-[0.3em] text-white">CONTRIBUTORS</h2>
+            <div class="h-[1px] flex-grow bg-outline-variant/30"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_1</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS101</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_2</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS102</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_3</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS103</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_4</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS104</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_5</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS105</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_6</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS106</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_7</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS107</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_8</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS108</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_9</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS109</p>
+            </div>
+            <div class="contributor-card bg-surface-container-lowest border border-white/5 rounded-md px-5 py-4 flex flex-col items-start gap-1 group">
+                <h4 class="font-headline text-sm font-bold text-white group-hover:text-tertiary transition-colors">NAME_10</h4>
+                <p class="font-label text-[11px] text-tertiary-fixed tracking-widest">241CS110</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-[#131313] border-t border-white/5 px-6 md:px-12 py-12">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+        <div class="space-y-4">
+            <div class="text-zinc-400 font-bold font-headline text-xl uppercase tracking-tighter">
+                <span class="text-tertiary-fixed">OS_</span>EMULATOR
+            </div>
+            <div class="text-zinc-600 font-headline text-[10px] uppercase tracking-widest">
+                © 2026 DIGITAL_MACHINIST [STABLE_BUILD]
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-8 justify-start md:justify-end">
+            <a class="text-zinc-500 hover:text-white transition-colors font-headline text-[10px] uppercase tracking-widest" href="#">GITHUB</a>
+            <a class="text-zinc-500 hover:text-white transition-colors font-headline text-[10px] uppercase tracking-widest" href="#">DOCUMENTATION</a>
+            <a class="text-zinc-500 hover:text-white transition-colors font-headline text-[10px] uppercase tracking-widest" href="#">LEGAL</a>
+        </div>
+    </div>
+</footer>
+
+<script src="index.js"></script>
 </body>
 </html>
