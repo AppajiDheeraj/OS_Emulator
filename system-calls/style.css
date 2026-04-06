@@ -1,5 +1,256 @@
 /*
-Module Name: System Calls
+Module Name: System Calls Simulator - Compact Edition
 Created by: Appaji Nagaraja Dheeraj
-File Purpose: Styling for the module
+File Purpose: Minimal styling (most styles are inline in HTML)
 */
+
+/* Additional enhancements can go here */
+    --primary: #ffffff;
+    --primary-container: #d4d4d4;
+    --surface: #131313;
+    --surface-container: #1f1f1f;
+    --surface-container-high: #2a2a2a;
+    --surface-container-highest: #353535;
+    --surface-container-low: #1b1b1b;
+    --surface-container-lowest: #0e0e0e;
+    --tertiary-fixed: #c00100;
+    --outline: #919191;
+    --on-surface: #e2e2e2;
+    --on-surface-variant: #c6c6c6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--surface);
+    background-image: radial-gradient(#2a2a2a 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--on-surface);
+}
+
+/* ============ SCROLLBAR STYLING ============ */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #353535;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #474747;
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes pulse-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============ CONSOLE STYLING ============ */
+#console-output {
+    animation: fade-in 0.3s ease-in;
+}
+
+#console-output div {
+    animation: slide-in 0.2s ease-out;
+    padding: 2px 0;
+}
+
+/* ============ INPUT STYLING ============ */
+#syscall-input {
+    outline: none;
+    caret-color: #c00100;
+    transition: all 0.2s ease;
+}
+
+#syscall-input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+#syscall-input:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* ============ BUTTON STYLING ============ */
+button {
+    font-family: 'Space Grotesk', sans-serif;
+    transition: all 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+#syscall-buttons button {
+    position: relative;
+    overflow: hidden;
+}
+
+#syscall-buttons button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: left 0.3s ease;
+}
+
+#syscall-buttons button:hover::before {
+    left: 100%;
+}
+
+/* ============ PROCESS TABLE ============ */
+#process-table div {
+    animation: slide-in 0.3s ease-out;
+}
+
+/* ============ MEMORY BAR ============ */
+#memory-bar {
+    box-shadow: 0 0 10px rgba(192, 1, 0, 0.5);
+}
+
+/* ============ STATUS INDICATOR ============ */
+#status-indicator {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ============ HEADER ANIMATION ============ */
+header {
+    animation: slide-in 0.4s ease-out;
+}
+
+/* ============ SECTION ANIMATION ============ */
+section {
+    animation: fade-in 0.3s ease-out;
+}
+
+/* ============ RESPONSIVE ADJUSTMENTS ============ */
+@media (max-width: 1024px) {
+    aside {
+        width: 64px;
+    }
+    
+    aside span:not(.material-symbols-outlined) {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    #syscall-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============ HOVER EFFECTS ============ */
+.syscall-nav-item {
+    position: relative;
+}
+
+.syscall-nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #c00100;
+    transition: width 0.3s ease;
+}
+
+.syscall-nav-item:hover::after {
+    width: 100%;
+}
+
+/* ============ GLASS EFFECT ============ */
+.glass-panel {
+    background: rgba(19, 19, 19, 0.6);
+    backdrop-filter: blur(20px);
+}
+
+/* ============ MATERIAL ICONS ============ */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ============ CUSTOM SCROLLING FOR HISTORY ============ */
+#history-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+#history-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ============ TYPEWRITER EFFECT FOR CONSOLE ============ */
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* ============ FOCUS STATES ============ */
+:focus-visible {
+    outline: 2px solid #c00100;
+    outline-offset: 2px;
+}
+
+/* ============ DARK MODE ADJUSTMENTS ============ */
+html.dark {
+    color-scheme: dark;
+}
+
+/* ============ ACCESSIBILITY ============ */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============ SELECTION STYLING ============ */
+::selection {
+    background-color: #c00100;
+    color: #ffffff;
+}
+
+::-moz-selection {
+    background-color: #c00100;
+    color: #ffffff;
+}
