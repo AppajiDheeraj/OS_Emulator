@@ -1,5 +1,157 @@
-<!--
-Module Name: System Calls
-Created by: Appaji Nagaraja Dheeraj
-File Purpose: HTML structure for the module
--->
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SYS_CALL_KERNEL v4.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet"/>
+    <link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">SYS_CALL_KERNEL v4.0</div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-dot"></span>
+                    <span id="status-text">RUNNING</span>
+                </div>
+                <div class="status-item">KERNEL: v4.0</div>
+                <div class="status-item">PROCESSES: <span id="proc-count">2</span></div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div class="content">
+            <!-- LEFT SIDEBAR -->
+            <div class="sidebar">
+                <!-- System Info -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">SYSTEM</div>
+                    <div class="stat-row">
+                        <span>PID:</span>
+                        <span class="stat-value">2840</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>USER:</span>
+                        <span class="stat-value">root</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>STATE:</span>
+                        <span class="stat-value">RUNNING</span>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">SYSCALLS</div>
+                    <div class="nav-item" onclick="filterCategory('all')">▪ ALL</div>
+                    <div class="nav-item" onclick="filterCategory('process')">▪ PROCESS</div>
+                    <div class="nav-item" onclick="filterCategory('file')">▪ FILE</div>
+                    <div class="nav-item" onclick="filterCategory('memory')">▪ MEMORY</div>
+                    <div class="nav-item" onclick="filterCategory('ipc')">▪ IPC</div>
+                    <div class="nav-item" onclick="filterCategory('device')">▪ DEVICE</div>
+                </div>
+
+                <!-- Memory Stats -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">MEMORY</div>
+                    <div class="stat-row">
+                        <span>Total:</span>
+                        <span class="stat-value">128MB</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Used:</span>
+                        <span class="stat-value" id="mem-used">35MB</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Free:</span>
+                        <span class="stat-value" id="mem-free">93MB</span>
+                    </div>
+                </div>
+
+                <!-- Commands -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ACTIONS</div>
+                    <div class="nav-item" onclick="clearHistory()">Clear History</div>
+                    <div class="nav-item" onclick="resetKernel()">Reset Kernel</div>
+                    <div class="nav-item" onclick="showHelp()">Help</div>
+                </div>
+            </div>
+
+            <!-- CENTER CONSOLE -->
+            <div class="console-panel">
+                <div class="console-header">EXECUTION CONSOLE</div>
+                <div class="console-output" id="console-output">
+                    <div class="console-line line-info">$ SYS_CALL_KERNEL initialized</div>
+                    <div class="console-line line-info">$ Ready for system calls...</div>
+                </div>
+                <div class="console-input-row">
+                    <span class="console-prompt">$</span>
+                    <input type="text" id="syscall-input" placeholder="fork | exec | wait | malloc | pipe ..." autofocus>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="right-panel">
+                <!-- Top: Memory + Process -->
+                <div class="panel">
+                    <div class="panel-header">MEMORY ALLOCATION</div>
+                    <div class="panel-content">
+                        <div class="memory-grid" id="memory-grid"></div>
+                        <div class="mem-legend">
+                            <div class="mem-legend-item">
+                                <div class="legend-box mem-free"></div>
+                                <span>Free</span>
+                            </div>
+                            <div class="mem-legend-item">
+                                <div class="legend-box mem-used"></div>
+                                <span>Used</span>
+                            </div>
+                            <div class="mem-legend-item">
+                                <div class="legend-box mem-allocated"></div>
+                                <span>Alloc</span>
+                            </div>
+                        </div>
+
+                        <div class="process-section">
+                            <div class="process-section-title">PROCESSES</div>
+                            <div class="process-list" id="process-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom: Quick Commands -->
+                <div class="panel">
+                    <div class="panel-header">QUICK COMMANDS</div>
+                    <div class="panel-content">
+                        <div class="buttons-grid" id="buttons-grid"></div>
+                        <div class="syscall-doc" id="syscall-doc">
+                            <div class="syscall-doc-title">SYSCALL DOC</div>
+                            <div class="syscall-doc-name" id="doc-name">fork()</div>
+                            <div class="syscall-doc-syntax" id="doc-syntax">fork()</div>
+                            <div class="syscall-doc-text" id="doc-desc">Create a child process by duplicating the current one.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-left">
+                <span>BUILD v4.0 SIMULATOR</span>
+                <span>©2026 OS Emulator</span>
+            </div>
+            <div class="footer-right">
+                <a onclick="showReference()">REFERENCE</a>
+                <span id="exec-count">Executed: 0</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

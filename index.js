@@ -37,4 +37,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Route module cards to their simulator pages
+    const moduleRoutes = {
+        SYSTEM_CALLS: 'system-calls/index.html',
+        MEMORY_MGMT: 'memory-management/index.html',
+        FRAGMENTATION: 'fragmentation/index.html',
+        CPU_SCHEDULING: 'cpu-scheduling/index.html',
+        'DEADLOCK_(RAG)': 'deadlock/index.html',
+        PROCESS_SYNC: 'process-synchronization/index.html',
+        DISK_SCHEDULING: 'disk-scheduling/index.html',
+        FILE_SYSTEM: 'file-system/index.html'
+    };
+
+    document.querySelectorAll('.module-card').forEach(card => {
+        const heading = card.querySelector('h3');
+        if (!heading) return;
+
+        const route = moduleRoutes[heading.textContent.trim()];
+        if (!route) return;
+
+        // Keep native behavior for anchor cards.
+        if (card.tagName.toLowerCase() === 'a') return;
+
+        card.addEventListener('click', () => {
+            window.location.href = route;
+        });
+    });
 });
