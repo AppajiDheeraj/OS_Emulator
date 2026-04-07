@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'DEADLOCK_(RAG)': 'deadlock/index.html',
         PROCESS_SYNC: 'process-synchronization/index.html',
         DISK_SCHEDULING: 'disk-scheduling/index.html',
-        FILE_SYSTEM: 'file-system/index.html'
+        FILE_SYSTEM: 'file-system/index.html',
+        RTOS: 'rtos/index.html'
     };
 
     document.querySelectorAll('.module-card').forEach(card => {
