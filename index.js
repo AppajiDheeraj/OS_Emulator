@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         PROCESS_SYNC: 'process-synchronization/index.html',
         DISK_SCHEDULING: 'disk-scheduling/index.html',
         FILE_SYSTEM: 'file-system/index.html',
+        COPY_ON_WRITE: 'copy-on-write/index.html',
         RTOS: 'rtos/index.html'
     };
 
