@@ -72,14 +72,6 @@
 
 			<div class="stats-grid">
 				<article class="stat-card">
-					<p>CPU Utilization</p>
-					<strong id="cpu-util">0%</strong>
-				</article>
-				<article class="stat-card">
-					<p>Memory Usage</p>
-					<strong id="memory-usage">0/4096 KB</strong>
-				</article>
-				<article class="stat-card">
 					<p>Tasks Running</p>
 					<strong id="tasks-running">0</strong>
 				</article>
@@ -127,7 +119,18 @@
 
 			<div class="panel memory-panel">
 				<h2>Memory Utilization</h2>
-				<div id="memory-blocks" class="memory-blocks"></div>
+				<span id="cpu-util" class="sr-only">0%</span>
+				<span id="memory-usage" class="sr-only">0/4096 KB</span>
+				<div class="util-bars">
+					<div class="util-group">
+						<p class="util-label">CPU Utilization Bar</p>
+						<div id="cpu-blocks" class="util-blocks cpu-blocks"></div>
+					</div>
+					<div class="util-group">
+						<p class="util-label">Memory Utilization Bar</p>
+						<div id="memory-blocks" class="util-blocks memory-blocks"></div>
+					</div>
+				</div>
 			</div>
 		</section>
 	</main>

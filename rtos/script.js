@@ -16,6 +16,7 @@ class RTOSSimulator {
 		this.tasksRunning = document.getElementById("tasks-running");
 		this.tasksWaiting = document.getElementById("tasks-waiting");
 		this.tasksList = document.getElementById("tasks-list");
+		this.cpuBlocks = document.getElementById("cpu-blocks");
 		this.memoryBlocks = document.getElementById("memory-blocks");
 		this.ganttContainer = document.getElementById("gantt-container");
 		this.ganttTimeMarkers = document.getElementById("gantt-time-markers");
@@ -28,9 +29,18 @@ class RTOSSimulator {
 		this.taskForm = document.getElementById("task-form");
 		this.simState = document.getElementById("sim-state");
 
+		this.initCpuBlocks();
 		this.initMemoryBlocks();
 		this.updateGanttTimeMarkers();
 		this.bindEvents();
+	}
+
+	initCpuBlocks() {
+		for (let i = 0; i < 40; i += 1) {
+			const block = document.createElement("div");
+			block.className = "cpu-block";
+			this.cpuBlocks.appendChild(block);
+		}
 	}
 
 	initMemoryBlocks() {
@@ -96,8 +106,14 @@ class RTOSSimulator {
 		this.updateUI();
 		this.updateSimState("IDLE");
 
+		document.querySelectorAll(".cpu-block").forEach((block) => {
+			block.style.backgroundColor = "";
+			block.style.boxShadow = "none";
+		});
+
 		document.querySelectorAll(".memory-block").forEach((block) => {
 			block.style.backgroundColor = "";
+			block.style.boxShadow = "none";
 		});
 	}
 
@@ -352,9 +368,33 @@ class RTOSSimulator {
 		});
 	}
 
+	updateCpuBar(cpuUtilization) {
+		const blocks = document.querySelectorAll(".cpu-block");
+		const blocksToFill = Math.floor((cpuUtilization / 100) * blocks.length);
+		if (this.cpuBlocks) {
+			this.cpuBlocks.title = `CPU Utilization: ${cpuUtilization}%`;
+			this.cpuBlocks.setAttribute("aria-label", `CPU Utilization ${cpuUtilization}%`);
+		}
+
+		blocks.forEach((block, index) => {
+			if (index < blocksToFill) {
+				block.style.backgroundColor = "#f3f3f3";
+				block.style.boxShadow = "0 0 8px rgba(255, 255, 255, 0.35) inset";
+			} else {
+				block.style.backgroundColor = "";
+				block.style.boxShadow = "none";
+			}
+		});
+	}
+
 	updateMemoryUI() {
 		const usagePercent = Math.round((this.usedMemory / this.totalMemory) * 100);
-		this.memoryUsage.textContent = `${this.usedMemory}/${this.totalMemory} KB (${usagePercent}%)`;
+		const memoryLabel = `${this.usedMemory}/${this.totalMemory} KB (${usagePercent}%)`;
+		this.memoryUsage.textContent = memoryLabel;
+		if (this.memoryBlocks) {
+			this.memoryBlocks.title = `Memory Usage: ${memoryLabel}`;
+			this.memoryBlocks.setAttribute("aria-label", `Memory Usage ${memoryLabel}`);
+		}
 		const blocks = document.querySelectorAll(".memory-block");
 		const blocksToFill = Math.floor((this.usedMemory / this.totalMemory) * blocks.length);
 
@@ -375,6 +415,7 @@ class RTOSSimulator {
 		const runningTasksCount = this.runningTasks.filter((task) => task !== null).length;
 		const cpuUtilization = Math.round((runningTasksCount / this.runningTasks.length) * 100);
 		this.cpuUtil.textContent = `${cpuUtilization}%`;
+		this.updateCpuBar(cpuUtilization);
 		this.tasksRunning.textContent = `${runningTasksCount}`;
 		this.tasksWaiting.textContent = `${this.tasks.filter((task) => task.state === "waiting").length}`;
 

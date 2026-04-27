@@ -434,6 +434,44 @@ body {
 
 .memory-panel {
 	grid-area: memory;
+	display: flex;
+	flex-direction: column;
+}
+
+.util-bars {
+	margin-top: 0.6rem;
+	display: grid;
+	gap: 0.55rem;
+}
+
+.util-group {
+	display: grid;
+	gap: 0.28rem;
+}
+
+.util-label {
+	font-family: "Space Grotesk", sans-serif;
+	font-size: 0.63rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.util-blocks {
+	display: flex;
+	gap: 0.3rem;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
 }
 
 .gantt-panel {
@@ -529,12 +567,7 @@ body {
 	color: #fff;
 }
 
-.memory-blocks {
-	display: flex;
-	gap: 0.3rem;
-	margin-top: 0.45rem;
-}
-
+.cpu-block,
 .memory-block {
 	flex: 1;
 	height: 1.8rem;
@@ -591,6 +624,7 @@ body {
 	.gantt-container {
 		max-height: 320px;
 	}
+
 }
 
 @media (max-width: 640px) {
