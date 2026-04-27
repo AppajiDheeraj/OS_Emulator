@@ -1,0 +1,205 @@
+<!-- 241CS109 — Anirudh Nayak | Module: Copy on Write -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive Copy-On-Write simulation for OS EMULATOR." />
+  <title>Copy-On-Write | OS EMULATOR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../index.html" class="nav-brand">OS EMULATOR</a>
+    <span class="nav-module">COPY ON WRITE</span>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-label">VERSION 1.0.4 STABLE</p>
+    <h1 class="hero-title">COPY <br>ON <br>WRITE</h1>
+    <p class="hero-desc" id="hero-desc"></p>
+  </section>
+
+  <div class="algo-badge-row">
+    <span class="algo-badge" id="algo-badge"></span>
+  </div>
+
+  <main class="sim-container" id="simulation">
+    <div class="control-panel">
+      <div class="panel-section">
+        <h2 class="panel-title">PAGE SETUP</h2>
+        <div class="form-grid two-col">
+          <label class="form-field">
+            <span class="field-label">PARENT PAGE COUNT</span>
+            <input class="input-control" id="page-count-input" type="number" min="1" max="8" step="1" value="4" />
+          </label>
+          <div class="form-field">
+            <span class="field-label">APPLY SETUP</span>
+            <button class="btn-outlined form-btn" id="applySetupBtn">REBUILD PAGES</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">OPERATION BUILDER</h2>
+        <div class="form-grid">
+          <label class="form-field">
+            <span class="field-label">ACTION</span>
+            <select class="input-control" id="op-type-select">
+              <option value="fork">fork()</option>
+              <option value="read">read</option>
+              <option value="write">write</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span class="field-label">PROCESS</span>
+            <select class="input-control" id="op-process-select">
+              <option value="PARENT">PARENT</option>
+              <option value="CHILD">CHILD</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span class="field-label">PAGE</span>
+            <select class="input-control" id="op-page-select"></select>
+          </label>
+          <div class="form-field">
+            <span class="field-label">QUEUE STEP</span>
+            <button class="btn-primary form-btn" id="addOperationBtn">ADD STEP</button>
+          </div>
+        </div>
+        <div class="inline-actions">
+          <button class="btn-outlined" id="loadForkBtn">LOAD DEFAULT FLOW</button>
+          <button class="btn-outlined" id="clearOpsBtn">CLEAR STEPS</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">OPERATION PIPELINE</h2>
+        <div class="operation-list" id="operation-list"></div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-shared">0</div>
+          <div class="stat-label">SHARED PAGES</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-private">0</div>
+          <div class="stat-label">PRIVATE COPIES</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-copies">0</div>
+          <div class="stat-label">COPY EVENTS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-faults">0</div>
+          <div class="stat-label">PAGE FAULTS</div>
+        </div>
+      </div>
+
+      <div class="panel-section status-grid">
+        <div class="status-card">
+          <div class="status-label">ACTIVE EVENT</div>
+          <div class="status-value" id="current-event">BASELINE</div>
+        </div>
+        <div class="status-card">
+          <div class="status-label">WRITE TARGET</div>
+          <div class="status-value" id="write-target">—</div>
+        </div>
+        <div class="status-card">
+          <div class="status-label">LATEST FAULT</div>
+          <div class="status-value" id="latest-fault">NONE</div>
+        </div>
+        <div class="status-card">
+          <div class="status-label">MEMORY MODE</div>
+          <div class="status-value accent" id="memory-mode">PRIVATE</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3 class="info-box-title">WHY COW MATTERS</h3>
+        <p class="info-box-text">
+          Right after <span class="highlight">fork()</span>, parent and child point to the same frames and mark them read-only.
+          <br><br>
+          A write raises a <span class="highlight">page fault</span>, the kernel allocates a new frame, copies the data, and remaps only the writer.
+          Reads keep sharing memory for free.
+        </p>
+      </div>
+    </div>
+
+    <div class="memory-panel">
+      <div class="panel-section">
+        <h2 class="panel-title">PAGE TABLES</h2>
+        <div class="table-grid">
+          <div class="table-card">
+            <div class="table-card-title">PARENT</div>
+            <div class="page-table" id="parent-table"></div>
+          </div>
+          <div class="table-card">
+            <div class="table-card-title">CHILD</div>
+            <div class="page-table" id="child-table"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">PHYSICAL FRAMES</h2>
+        <div class="frame-list" id="frame-list"></div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">ACCESS INSPECTOR</h2>
+        <div class="inspector-grid">
+          <div class="inspector-card">
+            <div class="inspector-label">PROCESS</div>
+            <div class="inspector-value" id="inspect-process">—</div>
+          </div>
+          <div class="inspector-card">
+            <div class="inspector-label">PAGE</div>
+            <div class="inspector-value" id="inspect-page">—</div>
+          </div>
+          <div class="inspector-card">
+            <div class="inspector-label">FRAME</div>
+            <div class="inspector-value" id="inspect-frame">—</div>
+          </div>
+          <div class="inspector-card">
+            <div class="inspector-label">RESULT</div>
+            <div class="inspector-value" id="inspect-result">READY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="controls">
+    <div class="speed-control">
+      <label class="speed-label">SPEED</label>
+      <div class="speed-btns">
+        <button class="speed-btn" data-speed="1500">SLOW</button>
+        <button class="speed-btn active" data-speed="900">NORMAL</button>
+        <button class="speed-btn" data-speed="450">FAST</button>
+      </div>
+    </div>
+    <div class="ctrl-btns">
+      <button class="btn-outlined" id="stepBackBtn">← BACK</button>
+      <button class="btn-outlined" id="stepForwardBtn">NEXT →</button>
+      <button class="btn-primary" id="startBtn">AUTO RUN</button>
+      <button class="btn-outlined" id="resetBtn">RESET</button>
+    </div>
+  </section>
+
+  <section class="terminal-section">
+    <div class="terminal-header">
+      <span class="terminal-title">TERMINAL LOG</span>
+      <button class="terminal-clear" id="clearBtn">CLEAR</button>
+    </div>
+    <div class="terminal" id="terminal">
+      <div class="log-muted">&gt; copy-on-write monitor ready. next step will fork the child process.</div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

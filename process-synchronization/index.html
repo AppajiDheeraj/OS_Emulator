@@ -1,5 +1,229 @@
-<!--
-Module Name: Process Synchronization
-Created by: TBD
-File Purpose: HTML structure for the module
--->
+<!-- 241CS104 — Ajitesh | Module: Process Synchronization -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Interactive simulation of the Producer-Consumer problem using semaphores and mutexes. Part of the OS_EMULATOR educational platform."/>
+  <title>Process Synchronization — OS_EMULATOR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="../index.html" class="nav-brand">OS_EMULATOR</a>
+    <span class="nav-module">PROCESS_SYNC</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-label">VERSION_1.0.4_STABLE</p>
+    <h1 class="hero-title">PROCESS_<br>SYNC.V1</h1>
+    <p class="hero-desc">Semaphore-driven Producer-Consumer simulation on a bounded buffer. Watch mutex contention and semaphore signalling in real time.</p>
+  </section>
+
+  <!-- ALGO BADGE -->
+  <div class="algo-badge-row">
+    <span class="algo-badge">ALGORITHM: SEMAPHORE · PRODUCER-CONSUMER · BOUNDED BUFFER</span>
+  </div>
+
+  <!-- MAIN SIMULATION -->
+  <main class="sim-container" id="simulation">
+
+    <!-- LEFT: Processes -->
+    <div class="processes-panel">
+
+      <div class="panel-section">
+        <h2 class="panel-title">PRODUCERS</h2>
+        <div class="process-list" id="producers-list">
+          <div class="process-card" id="card-P1" data-id="P1">
+            <div class="process-card-header">
+              <span class="process-id">P1</span>
+              <span class="chip chip-idle" id="chip-P1">IDLE</span>
+            </div>
+            <div class="process-card-sub">PRODUCER</div>
+            <div class="process-progress-wrap">
+              <div class="process-progress-bar" id="bar-P1"></div>
+            </div>
+          </div>
+          <div class="process-card" id="card-P2" data-id="P2">
+            <div class="process-card-header">
+              <span class="process-id">P2</span>
+              <span class="chip chip-idle" id="chip-P2">IDLE</span>
+            </div>
+            <div class="process-card-sub">PRODUCER</div>
+            <div class="process-progress-wrap">
+              <div class="process-progress-bar" id="bar-P2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">CONSUMERS</h2>
+        <div class="process-list" id="consumers-list">
+          <div class="process-card" id="card-C1" data-id="C1">
+            <div class="process-card-header">
+              <span class="process-id">C1</span>
+              <span class="chip chip-idle" id="chip-C1">IDLE</span>
+            </div>
+            <div class="process-card-sub">CONSUMER</div>
+            <div class="process-progress-wrap">
+              <div class="process-progress-bar" id="bar-C1"></div>
+            </div>
+          </div>
+          <div class="process-card" id="card-C2" data-id="C2">
+            <div class="process-card-header">
+              <span class="process-id">C2</span>
+              <span class="chip chip-idle" id="chip-C2">IDLE</span>
+            </div>
+            <div class="process-card-sub">CONSUMER</div>
+            <div class="process-progress-wrap">
+              <div class="process-progress-bar" id="bar-C2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-produced">0</div>
+          <div class="stat-label">PRODUCED</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-consumed">0</div>
+          <div class="stat-label">CONSUMED</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-switches">0</div>
+          <div class="stat-label">MUTEX WAITS</div>
+        </div>
+      </div>
+
+      <!-- Info Box to fill the gap -->
+      <div class="info-box">
+        <h3 class="info-box-title">SIMULATION LOGIC</h3>
+        <p class="info-box-text">
+          <span class="highlight">Producers</span> need semEmpty > 0 to create an item.<br>
+          <span class="highlight">Consumers</span> need semFull > 0 to consume an item.<br><br>
+          Both must acquire the <span class="highlight">Mutex lock</span> before modifying the buffer to prevent race conditions. If the Mutex is securely held, subsequent processes are pushed into the <span class="highlight">Wait Queue</span> (FIFO).
+        </p>
+      </div>
+    </div>
+
+    <!-- RIGHT: Buffer + Mutex -->
+    <div class="buffer-panel">
+
+      <div class="panel-section">
+        <h2 class="panel-title">BOUNDED BUFFER <span class="panel-title-sub" id="buffer-count">0 / 5</span></h2>
+        <div class="buffer-slots" id="buffer-slots">
+          <div class="buffer-slot empty" id="slot-0">
+            <div class="slot-inner">
+              <span class="slot-index">0</span>
+            </div>
+          </div>
+          <div class="buffer-slot empty" id="slot-1">
+            <div class="slot-inner">
+              <span class="slot-index">1</span>
+            </div>
+          </div>
+          <div class="buffer-slot empty" id="slot-2">
+            <div class="slot-inner">
+              <span class="slot-index">2</span>
+            </div>
+          </div>
+          <div class="buffer-slot empty" id="slot-3">
+            <div class="slot-inner">
+              <span class="slot-index">3</span>
+            </div>
+          </div>
+          <div class="buffer-slot empty" id="slot-4">
+            <div class="slot-inner">
+              <span class="slot-index">4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">MUTEX STATUS</h2>
+        <div class="mutex-display" id="mutex-display">
+          <div class="mutex-indicator free" id="mutex-indicator">
+            <div class="mutex-dot"></div>
+            <div>
+              <div class="mutex-status-text" id="mutex-status-text">FREE</div>
+              <div class="mutex-holder" id="mutex-holder">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">SEMAPHORES</h2>
+        <div class="semaphore-row">
+          <div class="semaphore-card">
+            <div class="sem-name">semEmpty</div>
+            <div class="sem-value" id="sem-empty-val">5</div>
+            <div class="sem-bar-wrap">
+              <div class="sem-bar" id="sem-empty-bar" style="width:100%"></div>
+            </div>
+            <div class="sem-desc">Slots for producers</div>
+          </div>
+          <div class="semaphore-card">
+            <div class="sem-name">semFull</div>
+            <div class="sem-value accent" id="sem-full-val">0</div>
+            <div class="sem-bar-wrap">
+              <div class="sem-bar accent" id="sem-full-bar" style="width:0%"></div>
+            </div>
+            <div class="sem-desc">Items for consumers</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Waiting Queue -->
+      <div class="panel-section">
+        <h2 class="panel-title">MUTEX WAIT QUEUE</h2>
+        <div class="wait-queue" id="wait-queue">
+          <span class="queue-empty">—</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- CONTROLS -->
+  <section class="controls">
+    <div class="speed-control">
+      <label class="speed-label">SPEED</label>
+      <div class="speed-btns">
+        <button class="speed-btn" id="speed-slow" data-speed="1400">SLOW</button>
+        <button class="speed-btn active" id="speed-normal" data-speed="800">NORMAL</button>
+        <button class="speed-btn" id="speed-fast" data-speed="350">FAST</button>
+      </div>
+    </div>
+    <div class="ctrl-btns">
+      <button class="btn-outlined" id="stepBackBtn">← BACK</button>
+      <button class="btn-outlined" id="stepForwardBtn">NEXT →</button>
+      <button class="btn-primary" id="startBtn">AUTO RUN</button>
+      <button class="btn-outlined" id="resetBtn">RESET</button>
+    </div>
+  </section>
+
+  <!-- TERMINAL -->
+  <section class="terminal-section">
+    <div class="terminal-header">
+      <span class="terminal-title">TERMINAL_LOG</span>
+      <button class="terminal-clear" id="clearBtn">CLEAR</button>
+    </div>
+    <div class="terminal" id="terminal">
+      <div class="log-muted">&gt; system ready. press RUN_SIMULATION to begin.</div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

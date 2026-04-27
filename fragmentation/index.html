@@ -1,5 +1,219 @@
-<!--
-Module Name: Fragmentation
-Created by: Anirudh Nayak
-File Purpose: HTML structure for the module
--->
+<!-- 241CS109 — Anirudh Nayak | Module: Fragmentation -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive simulation of memory fragmentation in OS EMULATOR." />
+  <title>Fragmentation | OS EMULATOR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../index.html" class="nav-brand">OS EMULATOR</a>
+    <span class="nav-module">FRAGMENTATION</span>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-label">VERSION 1.0.4 STABLE</p>
+    <h1 class="hero-title">MEMORY <br>FRAGMENTATION</h1>
+    <p class="hero-desc" id="hero-desc"></p>
+  </section>
+
+  <div class="algo-badge-row">
+    <span class="algo-badge" id="algo-badge"></span>
+  </div>
+
+  <main class="sim-container" id="simulation">
+    <div class="control-panel">
+      <div class="panel-section">
+        <h2 class="panel-title">MEMORY SETUP</h2>
+        <div class="form-grid two-col">
+          <label class="form-field">
+            <span class="field-label">FRAGMENTATION MODE</span>
+            <select class="input-control" id="mode-select">
+              <option value="external">EXTERNAL</option>
+              <option value="internal">INTERNAL</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span class="field-label">FIT ALGORITHM</span>
+            <select class="input-control" id="fit-algo-select">
+              <option value="first">FIRST FIT</option>
+              <option value="best">BEST FIT</option>
+              <option value="worst">WORST FIT</option>
+              <option value="last">LAST FIT</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span class="field-label">TOTAL MEMORY (KB)</span>
+            <input class="input-control" id="total-memory-input" type="number" min="32" step="4" value="196" />
+          </label>
+          <label class="form-field">
+            <span class="field-label">SYSTEM RESERVED (KB)</span>
+            <input class="input-control" id="reserved-memory-input" type="number" min="4" step="4" value="32" />
+          </label>
+          <label class="form-field" id="block-size-field">
+            <span class="field-label">BLOCK SIZE (KB)</span>
+            <input class="input-control" id="block-size-input" type="number" min="4" step="4" value="16" />
+          </label>
+        </div>
+        <div class="inline-actions">
+          <button class="btn-outlined" id="applyMemoryBtn">APPLY MEMORY</button>
+          <button class="btn-outlined" id="clearQueueBtn">CLEAR QUEUE</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">REQUEST BUILDER</h2>
+        <div class="form-grid">
+          <label class="form-field">
+            <span class="field-label">PROCESS ID</span>
+            <input class="input-control" id="process-id-input" type="text" maxlength="10" placeholder="P1" value="P1" />
+          </label>
+          <label class="form-field">
+            <span class="field-label">PROCESS LABEL</span>
+            <input class="input-control" id="process-label-input" type="text" maxlength="20" placeholder="Telemetry" value="Telemetry" />
+          </label>
+          <label class="form-field">
+            <span class="field-label">REQUEST SIZE (KB)</span>
+            <input class="input-control" id="request-size-input" type="number" min="1" step="1" value="18" />
+          </label>
+          <div class="form-field">
+            <span class="field-label">ADD REQUEST</span>
+            <button class="btn-primary form-btn" id="addAllocBtn">QUEUE ALLOC</button>
+          </div>
+          <label class="form-field">
+            <span class="field-label">FREE PROCESS</span>
+            <select class="input-control" id="free-process-select"></select>
+          </label>
+          <div class="form-field">
+            <span class="field-label">RELEASE REQUEST</span>
+            <button class="btn-outlined form-btn" id="addFreeBtn">QUEUE FREE</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">REQUEST QUEUE</h2>
+        <div class="request-list" id="request-list"></div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-used">92 KB</div>
+          <div class="stat-label">USED</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-free">104 KB</div>
+          <div class="stat-label">FREE</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-internal">0 KB</div>
+          <div class="stat-label">INTERNAL</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-external">0 KB</div>
+          <div class="stat-label">EXTERNAL</div>
+        </div>
+      </div>
+
+      <div class="panel-section status-grid">
+        <div class="status-card">
+          <div class="status-label">CURRENT EVENT</div>
+          <div class="status-value" id="current-event">READY</div>
+        </div>
+        <div class="status-card">
+          <div class="status-label">LARGEST HOLE</div>
+          <div class="status-value" id="largest-hole">36 KB</div>
+        </div>
+        <div class="status-card">
+          <div class="status-label">FAILED REQUESTS</div>
+          <div class="status-value" id="failed-requests">0</div>
+        </div>
+        <div class="status-card">
+          <div class="status-label">FRAGMENTATION STATE</div>
+          <div class="status-value accent" id="fragmentation-state">STABLE</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3 class="info-box-title">HOW TO READ THIS</h3>
+        <p class="info-box-text">
+          Each request is aligned to <span class="highlight">4 KB</span>, so a process may waste a few kilobytes inside its assigned block.
+          <br><br>
+          <span class="highlight">Internal fragmentation</span> is the alignment slack.
+          <br>
+          <span class="highlight">External fragmentation</span> appears when total free memory exists, but no single hole is large enough for the next request.
+        </p>
+      </div>
+    </div>
+
+    <div class="memory-panel">
+      <div class="panel-section">
+        <h2 class="panel-title">MEMORY MAP <span class="panel-title-sub" id="memory-total">196 KB TOTAL</span></h2>
+        <div class="memory-map" id="memory-map"></div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">HOLE ANALYSIS</h2>
+        <div class="hole-list" id="hole-list"></div>
+      </div>
+
+      <div class="panel-section">
+        <h2 class="panel-title">ALLOCATION INSPECTOR</h2>
+        <div class="inspector-grid">
+          <div class="inspector-card">
+            <div class="inspector-label">TARGET PROCESS</div>
+            <div class="inspector-value" id="inspect-process">—</div>
+          </div>
+          <div class="inspector-card">
+            <div class="inspector-label">REQUESTED</div>
+            <div class="inspector-value" id="inspect-requested">—</div>
+          </div>
+          <div class="inspector-card">
+            <div class="inspector-label">ALLOCATED</div>
+            <div class="inspector-value" id="inspect-allocated">—</div>
+          </div>
+          <div class="inspector-card">
+            <div class="inspector-label">RESULT</div>
+            <div class="inspector-value" id="inspect-result">READY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="controls">
+    <div class="speed-control">
+      <label class="speed-label">SPEED</label>
+      <div class="speed-btns">
+        <button class="speed-btn" data-speed="1500">SLOW</button>
+        <button class="speed-btn active" data-speed="900">NORMAL</button>
+        <button class="speed-btn" data-speed="450">FAST</button>
+      </div>
+    </div>
+    <div class="ctrl-btns">
+      <button class="btn-outlined" id="stepBackBtn">← BACK</button>
+      <button class="btn-outlined" id="stepForwardBtn">NEXT →</button>
+      <button class="btn-primary" id="startBtn">AUTO RUN</button>
+      <button class="btn-outlined" id="compactBtn">COMPACT</button>
+      <button class="btn-outlined" id="resetBtn">RESET</button>
+    </div>
+  </section>
+
+  <section class="terminal-section">
+    <div class="terminal-header">
+      <span class="terminal-title">TERMINAL LOG</span>
+      <button class="terminal-clear" id="clearBtn">CLEAR</button>
+    </div>
+    <div class="terminal" id="terminal">
+      <div class="log-muted">&gt; fragmentation monitor online. step through requests to inspect holes.</div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
