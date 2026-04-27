@@ -1,4 +1,4 @@
-/* 241CS109 — Anirudh Nayak | Module: Fragmentation */
+/* 241CS109 — Anirudh Nayak | Module: Copy on Write */
 :root {
   --color-bg: #0a0a0a;
   --color-surface: #111111;
@@ -24,6 +24,11 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
+}
+
+code {
+  font-family: var(--font-mono);
+  color: var(--color-accent);
 }
 
 .nav {
@@ -72,12 +77,12 @@ body {
   font-family: var(--font-display);
   font-size: clamp(40px, 6vw, 72px);
   font-weight: 700;
-  line-height: 1.02;
+  line-height: 0.98;
   letter-spacing: -0.02em;
 }
 
 .hero-desc {
-  max-width: 620px;
+  max-width: 630px;
   color: var(--color-text-muted);
   font-size: 14px;
   line-height: 1.7;
@@ -113,7 +118,9 @@ body {
 
 .panel-section,
 .stat-card,
-.status-card {
+.status-card,
+.table-card,
+.inspector-card {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface);
@@ -122,6 +129,7 @@ body {
 .panel-section { padding: 20px; }
 
 .panel-title,
+.table-card-title,
 .info-box-title,
 .terminal-title,
 .speed-label,
@@ -136,17 +144,8 @@ body {
 }
 
 .panel-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   margin-bottom: 14px;
   color: var(--color-text-muted);
-}
-
-.panel-title-sub {
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: 12px;
 }
 
 .form-grid {
@@ -201,74 +200,107 @@ body {
   margin-top: 14px;
 }
 
-.is-hidden {
-  display: none;
-}
-
-.request-list,
-.hole-list {
+.operation-list,
+.frame-list,
+.page-table {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.request-card,
-.hole-card {
+.operation-card,
+.frame-card,
+.table-row {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface2);
-  padding: 14px 16px;
-  transition: border-color 0.25s ease, background 0.25s ease;
 }
 
-.request-card.active {
+.operation-card,
+.frame-card {
+  padding: 14px 16px;
+}
+
+.operation-card.active {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.16);
 }
 
-.request-card.done {
-  opacity: 0.7;
+.operation-card.done {
+  opacity: 0.72;
 }
 
-.request-card.failed {
-  border-color: var(--color-warning);
-}
-
-.request-head,
-.hole-head {
+.operation-head,
+.frame-head,
+.table-row {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 6px;
 }
 
-.request-id,
-.hole-id,
+.table-grid,
+.stats-grid,
+.status-grid,
+.inspector-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.table-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.stats-grid,
+.status-grid,
+.inspector-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.stat-card,
+.status-card,
+.inspector-card,
+.table-card {
+  padding: 14px 12px;
+}
+
+.stat-value,
 .status-value,
 .inspector-value,
-.stat-value {
+.operation-id,
+.frame-id {
   font-family: var(--font-display);
   font-weight: 700;
 }
 
-.request-id,
-.hole-id { font-size: 15px; }
+.stat-value {
+  margin-bottom: 6px;
+  font-size: 24px;
+  line-height: 1;
+}
 
-.request-meta,
-.hole-meta,
-.request-note,
-.info-box-text,
-.terminal,
+.status-value,
+.inspector-value {
+  margin-top: 6px;
+  font-size: 18px;
+}
+
+.operation-id,
+.frame-id { font-size: 15px; }
+
+.operation-meta,
+.operation-note,
+.frame-meta,
+.table-cell,
 .chip,
-.memory-tag,
-.segment-label,
-.segment-meta {
+.info-box-text,
+.terminal {
   font-family: var(--font-mono);
 }
 
-.request-meta,
-.hole-meta,
-.request-note,
+.operation-meta,
+.operation-note,
+.frame-meta,
+.table-cell,
 .info-box-text {
   color: var(--color-text-muted);
   font-size: 11px;
@@ -297,44 +329,36 @@ body {
   background: rgba(255, 170, 0, 0.12);
 }
 
-.stats-grid,
-.status-grid,
-.inspector-grid {
-  display: grid;
-  gap: 8px;
+.table-card-title {
+  margin-bottom: 12px;
+  color: var(--color-accent);
 }
 
-.stats-grid {
-  grid-template-columns: repeat(2, 1fr);
+.table-row {
+  align-items: center;
+  padding: 12px 14px;
 }
 
-.status-grid,
-.inspector-grid {
-  grid-template-columns: repeat(2, 1fr);
+.table-cell.main {
+  color: var(--color-text);
+  font-size: 12px;
 }
 
-.stat-card,
-.status-card,
-.inspector-card {
-  padding: 14px 12px;
+.table-cell.muted {
+  text-align: right;
 }
 
-.stat-value,
-.status-value,
-.inspector-value {
-  margin-bottom: 6px;
-  font-size: 24px;
-  line-height: 1;
+.frame-card.shared {
+  border-color: rgba(255, 170, 0, 0.5);
 }
 
-.status-value,
-.inspector-value {
-  font-size: 18px;
+.frame-card.private {
+  border-color: rgba(0, 255, 136, 0.4);
 }
 
-.accent { color: var(--color-accent); }
-.warn { color: var(--color-warning); }
-.ok { color: var(--color-success); }
+.frame-card.copy {
+  border-color: rgba(255, 0, 0, 0.5);
+}
 
 .info-box {
   margin-top: auto;
@@ -354,77 +378,9 @@ body {
   font-weight: 600;
 }
 
-.memory-map {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.memory-segment {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-surface2);
-  min-height: 70px;
-  padding: 12px 14px;
-}
-
-.memory-segment::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 6px;
-  background: var(--segment-color, var(--color-border));
-}
-
-.memory-segment.free::before { background: var(--color-text-muted); }
-.memory-segment.system::before { background: #5b5b5b; }
-.memory-segment.user::before { background: var(--color-accent); }
-
-.segment-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-.segment-label {
-  font-size: 13px;
-  color: var(--color-text);
-}
-
-.segment-meta {
-  font-size: 10px;
-  color: var(--color-text-muted);
-  letter-spacing: 0.05em;
-}
-
-.memory-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  border: 1px solid var(--color-border);
-}
-
-.memory-tag.free {
-  color: var(--color-text-muted);
-}
-
-.memory-tag.user {
-  color: var(--color-accent);
-  border-color: rgba(255, 0, 0, 0.4);
-  background: rgba(255, 0, 0, 0.1);
-}
-
-.memory-tag.system {
-  color: #d0d0d0;
-}
+.accent { color: var(--color-accent); }
+.ok { color: var(--color-success); }
+.warn { color: var(--color-warning); }
 
 .controls,
 .terminal-section {
@@ -532,14 +488,20 @@ body {
   .stats-grid,
   .status-grid,
   .inspector-grid,
+  .table-grid,
   .form-grid,
   .form-grid.two-col {
     grid-template-columns: 1fr;
   }
 
-  .request-head,
-  .hole-head {
+  .operation-head,
+  .frame-head,
+  .table-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .table-cell.muted {
+    text-align: left;
   }
 }
