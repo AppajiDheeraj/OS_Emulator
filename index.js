@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         CPU_SCHEDULING: 'cpu-scheduling/index.html',
         'DEADLOCK_(RAG)': 'deadlock/index.html',
         PROCESS_SYNC: 'process-synchronization/index.html',
+        DEMAND_PAGING: 'demand-paging/index.html',
         DISK_SCHEDULING: 'disk-scheduling/index.html',
         FILE_SYSTEM: 'file-system/index.html',
         COPY_ON_WRITE: 'copy-on-write/index.html',
