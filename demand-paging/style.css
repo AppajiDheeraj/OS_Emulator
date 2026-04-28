@@ -32,7 +32,7 @@ label {
     color: #aaa;
 }
 
-input, select {
+input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -58,14 +58,49 @@ button:hover {
     background: #ff0000;
 }
 
-.output p {
-    background: #1a1a1a;
-    padding: 10px;
-    border-radius: 6px;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
-canvas {
-    background: #0a0a0a;
-    border-radius: 10px;
-    margin-top: 10px;
+td, th {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: center;
+}
+
+.fault {
+    background-color: #ff2d2d;
+}
+
+.hit {
+    background-color: #00cc66;
+}
+
+.highlight {
+    background-color: #333;
+}
+
+.legend span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+}
+
+.faultBox {
+    background: #ff2d2d;
+}
+
+.hitBox {
+    background: #00cc66;
+}
+
+.info {
+    font-size: 18px;
+}
+
+.stats p {
+    font-size: 18px;
 }

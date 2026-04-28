@@ -1,5 +1,69 @@
 <!--
-Module Name: Disk Scheduling
-Created by: Amisha
-File Purpose: HTML structure for the module
+(241CS107) Amisha Vidya Diwakar | Module: Demand Paging 
 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Disk Scheduling Simulator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h1>DISK SCHEDULING</h1>
+
+<div class="card">
+
+<label>Algorithm</label>
+<select id="algo" onchange="toggleInputs()">
+    <option value="" disabled selected hidden></option>
+    <option>FCFS</option>
+    <option>SSTF</option>
+    <option>SCAN</option>
+    <option>C-SCAN</option>
+    <option>LOOK</option>
+    <option>C-LOOK</option>
+</select>
+
+<label>Initial Head Position</label>
+<input type="number" id="head">
+
+<label>Disk Size</label>
+<input type="number" id="diskSize" placeholder="e.g. 200">
+
+<div id="directionBlock">
+    <label>Direction</label>
+    <select id="direction">
+        <option value="left">Left</option>
+        <option value="right">Right</option>
+    </select>
+</div>
+
+<label>Request Queue</label>
+<input type="text" id="queue" placeholder="82,170,43,140,24,16,190">
+
+<button onclick="run()">RUN SIMULATION</button>
+
+</div>
+
+<div class="card output">
+    <h3>Seek Sequence</h3>
+    <p id="sequence">-</p>
+
+    <h3>Total Seek Time</h3>
+    <p id="seek">-</p>
+</div>
+
+<div class="card">
+    <h3>Graph Visualization</h3>
+    <canvas id="diskCanvas" width="800" height="300"></canvas>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
