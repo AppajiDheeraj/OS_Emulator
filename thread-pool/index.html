@@ -1,0 +1,116 @@
+<!--
+Module Name: Thread Pool
+Created by: Aadharsh Venkat
+File Purpose: HTML structure for the module
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread Pool | OS Emulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="page-shell">
+        <header class="topbar">
+            <h1>Thread Pool Management</h1>
+        </header>
+
+        <section class="mode-panel">
+            <p class="eyebrow">SELECT MODE</p>
+            <div class="mode-grid" id="modeGrid"></div>
+        </section>
+
+        <section class="info-panel" id="modeInfo"></section>
+
+        <section class="workspace">
+            <form class="panel" id="poolForm">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">POOL INPUT</p>
+                        <h2>Threads and tasks</h2>
+                    </div>
+                    <button class="secondary-button" id="loadExample" type="button">
+                        <span class="material-symbols-outlined">science</span>
+                        Example
+                    </button>
+                </div>
+
+                <div class="controls-grid">
+                    <label>
+                        Tasks
+                        <input id="taskCount" type="number" min="0" max="12" step="1" value="0">
+                    </label>
+                    <label>
+                        Fixed threads
+                        <input id="threadCount" type="number" min="1" max="8" step="1" value="3">
+                    </label>
+                    <label>
+                        Max threads
+                        <input id="maxThreads" type="number" min="1" max="8" step="1" value="6">
+                    </label>
+                    <label>
+                        Grow queue
+                        <input id="growThreshold" type="number" min="1" max="12" step="1" value="2">
+                    </label>
+                    <label>
+                        Shrink idle
+                        <input id="shrinkAfter" type="number" min="1" max="12" step="1" value="3">
+                    </label>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Arrival</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskRows"></tbody>
+                    </table>
+                </div>
+
+                <div class="form-actions">
+                    <button class="primary-button" type="submit">
+                        <span class="material-symbols-outlined">play_arrow</span>
+                        Simulate
+                    </button>
+                </div>
+            </form>
+
+            <section class="panel output-panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">WORKER TIMELINE</p>
+                        <h2>Thread activity</h2>
+                    </div>
+                    <button class="secondary-button small" id="replay" type="button">
+                        <span class="material-symbols-outlined">replay</span>
+                        Replay
+                    </button>
+                </div>
+
+                <div class="timeline-stage" id="timelineStage">
+                    <div class="empty-state">Set tasks and click Simulate.</div>
+                </div>
+
+                <div class="metrics" id="metrics">
+                    <div><span>Makespan</span><strong>0</strong></div>
+                    <div><span>Avg wait</span><strong>0.00</strong></div>
+                    <div><span>Peak queue</span><strong>0</strong></div>
+                    <div><span>Peak threads</span><strong>0</strong></div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

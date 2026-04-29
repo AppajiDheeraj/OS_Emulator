@@ -478,28 +478,27 @@ function clearAnimationTimers() {
 
 function renderGantt(result) {
     clearAnimationTimers();
-    ganttTrack.innerHTML = '<div class="empty-state">Timeline is starting...</div>';
+    ganttTrack.innerHTML = "";
     ganttScale.innerHTML = "";
     currentTime.textContent = "0";
 
     const totalTime = Math.max(...result.segments.map((segment) => segment.end), 1);
     ganttTrack.style.minWidth = `${Math.max(520, totalTime * 34)}px`;
-    const visibleSegments = [];
 
     result.segments.forEach((segment, index) => {
         const timer = setTimeout(() => {
-            visibleSegments.push(segment);
-            ganttTrack.innerHTML = visibleSegments.map((item) => {
-                const width = ((item.end - item.start) / totalTime) * 100;
-                const color = item.id === null ? "#242424" : colors[item.id % colors.length];
-                const queueLabel = item.queue ? `Q${item.queue}` : `${item.start}-${item.end}`;
-                return `
-                    <div class="gantt-block ${item.id === null ? "idle" : ""}" style="width:${width}%; background:${color};">
-                        ${item.label}
-                        <small>${queueLabel}</small>
-                    </div>
-                `;
-            }).join("");
+            const width = ((segment.end - segment.start) / totalTime) * 100;
+            const color = segment.id === null ? "#242424" : colors[segment.id % colors.length];
+            const queueLabel = segment.queue ? `Q${segment.queue}` : `${segment.start}-${segment.end}`;
+            const block = document.createElement("div");
+            const label = document.createElement("small");
+            block.className = `gantt-block ${segment.id === null ? "idle" : ""}`;
+            block.style.width = `${width}%`;
+            block.style.background = color;
+            block.textContent = segment.label;
+            label.textContent = queueLabel;
+            block.appendChild(label);
+            ganttTrack.appendChild(block);
             currentTime.textContent = segment.end;
         }, index * 620);
         state.animationTimers.push(timer);
