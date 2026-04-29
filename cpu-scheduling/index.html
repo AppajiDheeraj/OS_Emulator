@@ -3,3 +3,109 @@ Module Name: CPU Scheduling
 Created by: Aadharsh Venkat
 File Purpose: HTML structure for the module
 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Scheduling | OS Emulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="page-shell">
+        <header class="topbar">
+            <div>
+                <h1>CPU Scheduling</h1>
+            </div>
+        </header>
+
+        <section class="hero-panel">
+            <p class="eyebrow">SELECT PROGRAM</p>
+            <div class="algorithm-grid" id="algorithmGrid" aria-label="Scheduling algorithm choices"></div>
+        </section>
+
+        <section class="info-panel" id="algorithmInfo"></section>
+
+        <section class="workspace">
+            <form class="input-panel" id="schedulerForm">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">PROCESS INPUT</p>
+                        <h2>Process table</h2>
+                    </div>
+                    <div class="process-count-control">
+                        <label for="processCount">Number of processes</label>
+                        <input id="processCount" type="number" min="0" max="8" step="1" value="0">
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="input-table">
+                        <thead>
+                            <tr id="inputHeader"></tr>
+                        </thead>
+                        <tbody id="processRows"></tbody>
+                    </table>
+                </div>
+
+                <div class="form-actions">
+                    <button class="secondary-button" id="loadExample" type="button">
+                        <span class="material-symbols-outlined">science</span>
+                        Example
+                    </button>
+                    <button class="primary-button" type="submit">
+                        <span class="material-symbols-outlined">play_arrow</span>
+                        Simulate
+                    </button>
+                </div>
+            </form>
+
+            <section class="output-panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">GANTT CHART</p>
+                        <h2>CPU timeline</h2>
+                    </div>
+                    <button class="secondary-button small" id="replayGantt" type="button">
+                        <span class="material-symbols-outlined">replay</span>
+                        Replay
+                    </button>
+                </div>
+
+                <div class="gantt-stage">
+                    <div class="time-readout">
+                        <span>time</span>
+                        <strong id="currentTime">0</strong>
+                    </div>
+                    <div class="gantt-track" id="ganttTrack"></div>
+                    <div class="gantt-scale" id="ganttScale"></div>
+                </div>
+
+                <div class="metrics" id="averages">
+                    <div>
+                        <span>Average TAT</span>
+                        <strong>0.00</strong>
+                    </div>
+                    <div>
+                        <span>Average WT</span>
+                        <strong>0.00</strong>
+                    </div>
+                </div>
+
+                <div class="table-wrap results-wrap">
+                    <table class="result-table">
+                        <thead id="resultHeader"></thead>
+                        <tbody id="resultRows"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
