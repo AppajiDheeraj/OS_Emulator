@@ -60,6 +60,7 @@ const parentField = document.getElementById("parent-field");
 const parentSelect = document.getElementById("parent-select");
 const targetField = document.getElementById("target-field");
 const targetSelect = document.getElementById("target-select");
+const graphCanvas = document.getElementById("graph-canvas");
 const nodeLayer = document.getElementById("node-layer");
 const edgeLayer = document.getElementById("edge-layer");
 const terminal = document.getElementById("terminal");
@@ -153,23 +154,29 @@ function renderInfo() {
 function renderControls() {
   const type = operationType.value;
   const canCreateDirectory = !["single", "two"].includes(selectedMode);
+  const canCreateUser = selectedMode === "two";
   const canLink = ["dag", "general"].includes(selectedMode);
 
   operationType.querySelector('option[value="directory"]').disabled = !canCreateDirectory;
+  operationType.querySelector('option[value="user"]').disabled = !canCreateUser;
   operationType.querySelector('option[value="link"]').disabled = !canLink;
-  if ((type === "directory" && !canCreateDirectory) || (type === "link" && !canLink)) {
+  if (
+    (type === "directory" && !canCreateDirectory) ||
+    (type === "user" && !canCreateUser) ||
+    (type === "link" && !canLink)
+  ) {
     operationType.value = "file";
   }
 
   entryNameField.hidden = operationType.value === "delete";
-  parentField.hidden = operationType.value === "delete";
+  parentField.hidden = operationType.value === "delete" || operationType.value === "user";
   targetField.hidden = operationType.value !== "link" && operationType.value !== "delete";
 
   parentSelect.innerHTML = "";
   directoryNodes().forEach((node) => {
     const option = document.createElement("option");
     option.value = node.id;
-    option.textContent = node.name;
+    option.textContent = labelForSelect(node);
     parentSelect.appendChild(option);
   });
 
@@ -177,9 +184,13 @@ function renderControls() {
   targetNodes().forEach((node) => {
     const option = document.createElement("option");
     option.value = node.id;
-    option.textContent = `${node.name} (${node.type})`;
+    option.textContent = `${labelForSelect(node)} (${node.type})`;
     targetSelect.appendChild(option);
   });
+}
+
+function labelForSelect(node) {
+  return pathTo(node.id);
 }
 
 function duplicateName(parentId, name) {
@@ -217,6 +228,22 @@ function applyCreate(type) {
   log(`${type === "directory" ? "mkdir" : "create"} ${pathTo(node.id)} completed.`, "ok");
 }
 
+function applyCreateUser() {
+  const name = cleanName(entryName.value);
+  const root = rootNode();
+  if (!name) {
+    log("user directory rejected: user name is required.", "bad");
+    return;
+  }
+  if (duplicateName(root.id, name)) {
+    log(`user directory rejected: ${name} already exists in the MFD.`, "bad");
+    return;
+  }
+  const userDir = makeNode(name, "user", name);
+  connect(root.id, userDir.id);
+  log(`user directory ${pathTo(userDir.id)} created.`, "ok");
+}
+
 function applyLink() {
   const alias = cleanName(entryName.value) || `link_${targetSelect.value}`;
   const parentId = parentSelect.value;
@@ -244,9 +271,45 @@ function applyDelete() {
     return;
   }
   const target = getNode(targetId);
-  edges = edges.filter((edge) => edge.to !== targetId && edge.from !== targetId);
-  nodes = nodes.filter((node) => node.id !== targetId);
-  log(`delete ${target.name} removed the entry and its references.`, "warn");
+  const removedIds = collectContainedSubtree(targetId);
+  edges = edges.filter((edge) => !removedIds.has(edge.to) && !removedIds.has(edge.from));
+  nodes = nodes.filter((node) => !removedIds.has(node.id));
+  const prunedCount = pruneOrphanedEntries();
+  log(`delete ${target.name} removed ${removedIds.size} entr${removedIds.size === 1 ? "y" : "ies"} and all related references.`, "warn");
+  if (prunedCount > 0) {
+    log(`cleanup removed ${prunedCount} orphaned entr${prunedCount === 1 ? "y" : "ies"}.`, "warn");
+  }
+}
+
+function collectContainedSubtree(id, removed = new Set()) {
+  if (removed.has(id)) return removed;
+  removed.add(id);
+  edges
+    .filter((edge) => edge.from === id && edge.kind === "contains")
+    .forEach((edge) => collectContainedSubtree(edge.to, removed));
+  return removed;
+}
+
+function reachableContainedEntries() {
+  const reachable = new Set();
+  const stack = [rootNode().id];
+  while (stack.length) {
+    const id = stack.pop();
+    if (reachable.has(id)) continue;
+    reachable.add(id);
+    edges
+      .filter((edge) => edge.from === id && edge.kind === "contains")
+      .forEach((edge) => stack.push(edge.to));
+  }
+  return reachable;
+}
+
+function pruneOrphanedEntries() {
+  const reachable = reachableContainedEntries();
+  const before = nodes.length;
+  nodes = nodes.filter((node) => reachable.has(node.id));
+  edges = edges.filter((edge) => reachable.has(edge.from) && reachable.has(edge.to));
+  return before - nodes.length;
 }
 
 function pathTo(id, seen = new Set()) {
@@ -260,39 +323,50 @@ function pathTo(id, seen = new Set()) {
   return `${pathTo(parentEdge.from, seen)}/${node.name}`;
 }
 
-function depthMap() {
-  const levels = new Map([[rootNode().id, 0]]);
-  const queue = [rootNode().id];
-  while (queue.length) {
-    const id = queue.shift();
-    const level = levels.get(id);
-    edges.filter((edge) => edge.from === id).forEach((edge) => {
-      if (!levels.has(edge.to)) {
-        levels.set(edge.to, level + 1);
-        queue.push(edge.to);
-      }
-    });
-  }
-  return levels;
+function containedChildren(id) {
+  return edges
+    .filter((edge) => edge.from === id && edge.kind === "contains")
+    .map((edge) => getNode(edge.to))
+    .filter(Boolean);
+}
+
+function subtreeWeight(id, seen = new Set()) {
+  if (seen.has(id)) return 1;
+  seen.add(id);
+  const children = containedChildren(id);
+  if (!children.length) return 1;
+  return children.reduce((sum, child) => sum + subtreeWeight(child.id, new Set(seen)), 0);
 }
 
 function layoutNodes() {
-  const levels = depthMap();
-  nodes.forEach((node) => {
-    if (!levels.has(node.id)) levels.set(node.id, 1);
-  });
-  const grouped = {};
-  nodes.forEach((node) => {
-    const level = Math.min(levels.get(node.id), 4);
-    grouped[level] = grouped[level] || [];
-    grouped[level].push(node);
-  });
-  Object.entries(grouped).forEach(([levelText, group]) => {
-    const level = Number(levelText);
-    group.forEach((node, index) => {
-      node.x = 80 + (index + 1) * (760 / (group.length + 1));
-      node.y = 68 + level * 104;
+  const placed = new Set();
+
+  function assignSubtree(id, left, right, depth) {
+    const node = getNode(id);
+    if (!node || placed.has(id)) return;
+
+    node.x = (left + right) / 2;
+    node.y = 68 + depth * 118;
+    placed.add(id);
+
+    const children = containedChildren(id);
+    if (!children.length) return;
+
+    const totalWeight = children.reduce((sum, child) => sum + subtreeWeight(child.id), 0);
+    let cursor = left;
+    children.forEach((child) => {
+      const width = ((right - left) * subtreeWeight(child.id)) / totalWeight;
+      assignSubtree(child.id, cursor, cursor + width, depth + 1);
+      cursor += width;
     });
+  }
+
+  assignSubtree(rootNode().id, 70, 830, 0);
+
+  const unplaced = nodes.filter((node) => !placed.has(node.id));
+  unplaced.forEach((node, index) => {
+    node.x = 120 + index * 150;
+    node.y = 68;
   });
 }
 
@@ -300,6 +374,9 @@ function renderGraph() {
   layoutNodes();
   edgeLayer.innerHTML = "";
   nodeLayer.innerHTML = "";
+  const graphHeight = Math.max(520, Math.max(...nodes.map((node) => node.y), 0) + 110);
+  edgeLayer.setAttribute("viewBox", `0 0 900 ${graphHeight}`);
+  graphCanvas.style.minHeight = `${graphHeight}px`;
 
   edges.forEach((edge) => {
     const from = getNode(edge.from);
@@ -316,7 +393,7 @@ function renderGraph() {
     const el = document.createElement("div");
     el.className = `fs-node ${node.type}`;
     el.style.left = `${(node.x / 900) * 100}%`;
-    el.style.top = `${(node.y / 520) * 100}%`;
+    el.style.top = `${(node.y / graphHeight) * 100}%`;
     el.innerHTML = `<span>${node.type.toUpperCase()}</span><strong></strong><small></small>`;
     el.querySelector("strong").textContent = node.name;
     el.querySelector("small").textContent = pathTo(node.id);
@@ -437,6 +514,7 @@ operationType.addEventListener("change", renderControls);
 operationForm.addEventListener("submit", (event) => {
   event.preventDefault();
   if (operationType.value === "file" || operationType.value === "directory") applyCreate(operationType.value);
+  if (operationType.value === "user") applyCreateUser();
   if (operationType.value === "link") applyLink();
   if (operationType.value === "delete") applyDelete();
   renderAll();
