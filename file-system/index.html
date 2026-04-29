@@ -1,5 +1,122 @@
-<!--
-Module Name: File System
-Created by: Aditya Gayan
-File Purpose: HTML structure for the module
--->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File System | OS_EMULATOR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../index.html" class="nav-brand">OS_EMULATOR</a>
+    <span class="nav-module">FILE_SYSTEM_DIRECTORY_SIM</span>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-label">MODULE // FILE SYSTEM</div>
+    <h1 class="hero-title">Directory Structure Simulator</h1>
+    <p class="hero-desc">
+      Compare how operating systems organize file names, users, paths, shared subdirectories, and cyclic references across classic directory models.
+    </p>
+  </header>
+
+  <div class="algo-badge-row">
+    <span class="algo-badge" id="mode-badge">SINGLE_LEVEL_DIRECTORY</span>
+  </div>
+
+  <main class="sim-container">
+    <section class="control-panel">
+      <div class="panel-section">
+        <h2 class="panel-title">DIRECTORY MODEL</h2>
+        <div class="mode-grid" id="mode-grid"></div>
+      </div>
+
+      <form class="panel-section operation-form" id="operation-form">
+        <h2 class="panel-title">OPERATION BUILDER</h2>
+        <label class="form-field">
+          <span>Operation</span>
+          <select class="input-control" id="operation-type">
+            <option value="file">Create File</option>
+            <option value="directory">Create Directory</option>
+            <option value="link">Create Link</option>
+            <option value="delete">Delete Entry</option>
+          </select>
+        </label>
+        <label class="form-field" id="entry-name-field">
+          <span>Entry Name</span>
+          <input class="input-control" id="entry-name" type="text" maxlength="18" value="report" />
+        </label>
+        <label class="form-field" id="parent-field">
+          <span>Parent Directory</span>
+          <select class="input-control" id="parent-select"></select>
+        </label>
+        <label class="form-field" id="target-field">
+          <span>Target Entry</span>
+          <select class="input-control" id="target-select"></select>
+        </label>
+        <div class="button-row">
+          <button class="btn-primary" type="submit">APPLY OPERATION</button>
+          <button class="btn-outlined" id="demo-btn" type="button">LOAD DEMO</button>
+          <button class="btn-outlined" id="reset-btn" type="button">RESET</button>
+        </div>
+      </form>
+
+      <div class="panel-section info-card">
+        <h2 class="panel-title">MODEL NOTES</h2>
+        <p id="mode-summary"></p>
+        <div class="rule-list" id="rule-list"></div>
+      </div>
+    </section>
+
+    <section class="workspace-panel">
+      <div class="panel-section status-grid">
+        <div class="stat-card">
+          <span class="stat-label">DIRECTORIES</span>
+          <strong id="stat-directories">1</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">FILES</span>
+          <strong id="stat-files">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">LINKS</span>
+          <strong id="stat-links">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">STATE</span>
+          <strong id="stat-state">VALID</strong>
+        </div>
+      </div>
+
+      <div class="panel-section graph-section">
+        <div class="section-head">
+          <h2 class="panel-title">DIRECTORY GRAPH</h2>
+          <span id="graph-caption">ROOT contains every file entry.</span>
+        </div>
+        <div class="graph-canvas" id="graph-canvas">
+          <svg class="edge-layer" id="edge-layer" viewBox="0 0 900 520" aria-hidden="true"></svg>
+          <div class="node-layer" id="node-layer"></div>
+        </div>
+      </div>
+
+      <div class="lower-grid">
+        <div class="panel-section">
+          <h2 class="panel-title">PATH TABLE</h2>
+          <div class="path-table" id="path-table"></div>
+        </div>
+        <div class="panel-section">
+          <div class="terminal-head">
+            <h2 class="panel-title">KERNEL LOG</h2>
+            <button class="terminal-clear" id="clear-log-btn" type="button">CLEAR</button>
+          </div>
+          <div class="terminal" id="terminal"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
